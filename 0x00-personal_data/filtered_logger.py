@@ -48,6 +48,7 @@ def get_logger():
     logger.addHandler(stream_handler)
     return logger
 
+
 def get_db() -> mysql.connector.connection.MySQLConnection:
     """
     Creates a connector to a database.
