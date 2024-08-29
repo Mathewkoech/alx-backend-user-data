@@ -33,7 +33,7 @@ def filter_datum(
     return re.sub(extract(fields, separator), replace(redaction), message)
 
 
-def get_logger():
+def get_logger() -> logging.Logger:
     """
     Creates a new logger for user data.
 
@@ -101,10 +101,11 @@ def main():
 
 class RedactingFormatter(logging.Formatter):
     """ Redacting Formatter class
-        """
+    """
 
     REDACTION = "***"
     FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
+    FORMAT_FIELDS = ('name', 'levelname', 'asctime', 'message')
     SEPARATOR = ";"
 
     def __init__(self, fields: List[str]):
