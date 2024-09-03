@@ -56,14 +56,6 @@ def status():
     """
     return jsonify({"status": "OK"})
 
-
-@app.errorhandler(404)
-def not_found(error) -> str:
-    """ Not found handler
-    """
-    return jsonify({"error": "Not found"}), 404
-
-
 @app.errorhandler(401)
 def unauthorized(error) -> str:
     """ Unauthorized handler
@@ -76,6 +68,13 @@ def forbidden(error) -> str:
     """ Forbidden handler
     """
     return jsonify({"error": "Forbidden"}), 403
+
+
+@app.errorhandler(404)
+def not_found(error) -> str:
+    """ Not found handler
+    """
+    return jsonify({"error": "Not found"}), 404
 
 
 if __name__ == "__main__":
