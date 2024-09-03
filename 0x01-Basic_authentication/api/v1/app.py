@@ -56,6 +56,7 @@ def status():
     """
     return jsonify({"status": "OK"})
 
+
 @app.errorhandler(401)
 def unauthorized(error) -> str:
     """ Unauthorized handler
