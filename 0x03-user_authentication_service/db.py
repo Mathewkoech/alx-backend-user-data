@@ -53,35 +53,50 @@ class DB:
         return new_user
     
     def find_user_by(self, **kwargs) -> User:
-        """Find a user by a specific attribute
+        """Search and return user by a given field.
 
         Args:
-            **kwargs: Arbitrary keyword arguments.
+            **kwargs: Arbitrary keyword arguments representing user attributes.
+
+        Raises:
+            InvalidRequestError: If no keyword arguments are provided or if
+             any provided key is not a valid user attribute.
+            NoResultFound: If no user is found with the given attributes.
 
         Returns:
-            User: The first row that matches the query.
+            User: The user object that matches the given attributes.
         """
-        try:
-            # Query the database for a user that matches the kwargs
-            return self._session.query(User).filter_by(**kwargs).one()
-        except NoResultFound:
-            # If no user is found, return None
-            raise NoResultFound
+        if not kwargs:
+            raise InvalidRequestError("No search parameters provided.")
 
-        except InvalidRequestError: # If the query is not valid
-            raise InvalidRequestError
-        
+        if not self._valid_attributes(**kwargs):
+            raise InvalidRequestError("Invalid search parameters provided.")
+
+        db_user = self._session.query(User).filter_by(**kwargs).first()
+        if not db_user:
+            raise NoResultFound("No user found with the given parameters.")
+
+        return db_user
+
     def update_user(self, user_id: int, **kwargs) -> None:
-        """Update a user in the database
+        """Update an instance of a user.
 
         Args:
-            user_id (int): The user ID.
+            user_id (int): The ID of the user to update.
+            **kwargs: Arbitrary keyword arguments representing user attributes
+             to update.
+
+        Raises:
+            ValueError: If any provided key is not a valid user attribute.
         """
-        user = self.find_user_by(id=user_id)
+        if not self._valid_attributes(**kwargs):
+            raise ValueError("Unrecognized arguments for User.")
+
+        db_user = self.find_user_by(id=user_id)
         for key, value in kwargs.items():
-            if not hasattr(user, key):
-                raise ValueError
-            setattr(user, key, value)
+            setattr(db_user, key, value)
+
+        self._session.add(db_user)
         self._session.commit()
 
     def delete_user_by_id(self, user_id: int) -> None:
