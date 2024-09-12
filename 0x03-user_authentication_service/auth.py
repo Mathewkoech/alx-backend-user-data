@@ -22,7 +22,6 @@ class Auth:
     def __init__(self):
         self._db = DB()
 
-    
     def register_user(self, email: str, password: str) -> User:
         """Register a user
         """
@@ -30,8 +29,7 @@ class Auth:
             user = self._db.find_user_by(email=email)
             raise ValueError(f"User {email} already exists")
         except NoResultFound:
-            return self._db.add_user(email, self._hash_password(password))  
-        
+            return self._db.add_user(email, self._hash_password(password))
 
     def valid_login(self, email: str, password: str) -> bool:
         """Validate login credentials.
@@ -102,8 +100,8 @@ class Auth:
         """
         self._db.update_user(user_id, session_id=None)
         return None
-    
-    def get_reset_password_token(self, email: str) -> str:  
+
+    def get_reset_password_token(self, email: str) -> str:
         """Generates a reset password token
         """
         try:
@@ -113,13 +111,14 @@ class Auth:
             return token
         except NoResultFound:
             raise ValueError
-        
+
     def update_password(self, reset_token: str, password: str) -> None:
         """Updates a user's password
         """
         try:
             user = self._db.find_user_by(reset_token=reset_token)
-            self._db.update_user(user.id, hashed_password=self._hash_password(password), reset_token=None)
+            self._db.update_user(user.id, hashed_password=self._hash_password(
+                    password), reset_token=None)
         except NoResultFound:
             raise ValueError
         return None

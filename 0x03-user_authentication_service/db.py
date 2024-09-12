@@ -44,14 +44,14 @@ class DB:
         # Create a new User object with the provided email and hashed_password
         new_user = User(email=email, hashed_passowrd=hashed_password)
 
-        #add user to session
+        # add user to session
         self._session.add(new_user)
 
         # Commit the session to save the user in the database
         self._session.commit()
 
         return new_user
-    
+
     def find_user_by(self, **kwargs) -> User:
         """Search and return user by a given field.
 
