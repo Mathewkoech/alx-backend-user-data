@@ -8,11 +8,16 @@ import uuid
 from user import User
 
 
-def _hash_password(self, password: str) -> str:
-        """Hashes a password
-        """
-        salted = bcrypt.gensalt()
-        return bcrypt.hashpw(password.encode(), salted)
+def _hash_password(password: str) -> bytes:
+    """Hashes a password.
+    """
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
+
+
+def _generate_uuid() -> str:
+    """Generates a UUID.
+    """
+    return str(uuid4())
 
 
 class Auth:
@@ -46,15 +51,6 @@ class Auth:
             return bcrypt.checkpw(password.encode(), user.hashed_password)
         except NoResultFound:
             return False
-
-    @staticmethod
-    def generate_uuid() -> str:
-        """Generate a new UUID and return its string representation.
-
-        Returns:
-            str: The string representatin of the generated UUID.
-        """
-        return str(uuid.uuid4())
 
     def create_session(self, email: str) -> str:
         """Create a session for the user with the given email.
